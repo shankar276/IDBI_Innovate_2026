@@ -1,0 +1,123 @@
+# 🔄 Resume Later: Smart Financial Twin
+
+## 📌 **Completed Tasks**
+### **1. Backend (FastAPI)**
+- ✅ **Initialized FastAPI Project** with:
+  - Loan eligibility, fraud risk, and scenario simulation APIs.
+  - Redis caching for real-time predictions.
+- ✅ **Database Setup** (PostgreSQL schema ready; synthetic data generated).
+- **API Endpoints**
+  | Endpoint | Method | Description | Input | Output |
+  |----------|--------|-------------|-------|--------|
+  | `/predict/loan_eligibility` | POST | Predict loan approval probability | `{user_id: str, loan_amount: float}` | `{score: float, factors: dict}` |
+  | `/predict/fraud_risk` | POST | Assess fraud risk for a transaction | `{user_id: str, transaction_id: str}` | `{risk: str, confidence: float}` |
+  | `/simulate/scenario` | POST | Simulate financial scenario | `{user_id: str, scenario: str}` | `{impact: dict}` |
+
+---
+
+### **2. Synthetic Data Generation**
+- **Tools**: `faker`, `pandas`, `numpy`.
+- **Data Schema**:
+  ```python
+  # Users
+  {
+    "user_id": str,
+    "age": int,
+    "income": float,
+    "credit_score": int,
+    "employment_status": str,
+    "savings": float
+  }
+
+  # Transactions
+  {
+    "transaction_id": str,
+    "user_id": str,
+    "amount": float,
+    "timestamp": datetime,
+    "merchant": str,
+    "category": str,
+    "is_fraud": bool
+  }
+  ```
+- **Script**: `src/data/generate_synthetic_data.py`.
+
+---
+
+### **3. ML Models**
+- **Loan Eligibility (XGBoost)**
+  - **Features**: Credit score, income, debt-to-income ratio, employment history.
+  - **Target**: Probability of loan approval.
+- **Fraud Detection (CatBoost)**
+  - **Features**: Transaction amount, merchant category, time since last transaction.
+  - **Target**: Binary fraud label.
+- **Cash Flow Forecasting (LightGBM)**
+  - **Features**: Historical transactions, income stability, seasonal trends.
+  - **Target**: Next 3 months' cash flow.
+- **Explainability (SHAP)**
+  - Generate feature importance plots for all models.
+
+---
+
+## 📌 **Post-Submission Roadmap**
+### **1. LLM Integration (Llama 3/GPT)**
+- **Status**: Mock API implemented (`/query` endpoint).
+- **Next Steps**: Replace with actual LLM (e.g., Llama 3 or GPT-4).
+- **Example**:
+  ```python
+  @app.post("/query")
+def handle_query(query: str, user_id: str):
+      scenario = parse_query(query)  # e.g., "buy a car" → {action: "purchase", item: "car", amount: 1500000}
+      impact = simulate_scenario(user_id, scenario)
+      return {"response": f"Buying a car will reduce your savings by ₹{impact['savings_impact']} and delay retirement by {impact['retirement_delay']} years."}
+  ```
+
+---
+
+### **5. Scenario Simulation Engine**
+- **Inputs**: User query (e.g., "What if I lose my job?").
+- **Logic**:
+  1. Adjust income/expenses based on scenario.
+  2. Re-run ML models (loan eligibility, fraud risk).
+  3. Generate visual impact report (Plotly).
+- **Output**: JSON with:
+  ```json
+  {
+    "cash_flow_impact": {"month_1": -20000, "month_2": -15000},
+    "loan_eligibility_drop": 0.3,
+    "fraud_risk_increase": 0.15,
+    "retirement_delay": 2
+  }
+  ```
+
+---
+
+## 📌 **Pending Tasks (Low Priority)**
+### **6. Documentation & Presentation**
+- **5-Page PDF (`docs/`)**:
+  - Problem statement, solution overview, innovation, business impact, scalability.
+- **Pitch Deck (`presentation/`)**:
+  - 5-minute demo flow:
+    1. User logs in → Synthetic data loaded.
+    2. AI builds Financial Twin.
+    3. Dashboard shows health score, fraud risk, loan readiness.
+    4. User asks, "Can I afford a home loan?"
+    5. AI simulates outcome with visuals.
+
+---
+
+## 🔍 **Blockers & Notes**
+1. **Data Generation**: Need realistic distributions for income, spending, fraud patterns.
+2. **Model Training**: Requires synthetic data first.
+3. **LLM Integration**: May need API keys (Llama 3/GPT).
+4. **Deployment**: FastAPI + React integration (CORS, environment variables).
+
+---
+
+## 📅 **Timeline (Hackathon Deadline: 15 July 2026)**
+| Task | Deadline | Status |
+|------|----------|--------|
+| Backend + Data Generation | 3 July | ❌ |
+| ML Models + Explainability | 7 July | ❌ |
+| LLM + Scenario Simulation | 10 July | ❌ |
+| Documentation + Pitch Deck | 14 July | ❌ |
