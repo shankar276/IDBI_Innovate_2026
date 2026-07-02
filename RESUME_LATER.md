@@ -92,17 +92,17 @@ def handle_query(query: str, user_id: str):
 
 ---
 
-## 📌 **Pending Tasks (Low Priority)**
-### **6. Documentation & Presentation**
-- **5-Page PDF (`docs/`)**:
-  - Problem statement, solution overview, innovation, business impact, scalability.
-- **Pitch Deck (`presentation/`)**:
-  - 5-minute demo flow:
-    1. User logs in → Synthetic data loaded.
-    2. AI builds Financial Twin.
-    3. Dashboard shows health score, fraud risk, loan readiness.
-    4. User asks, "Can I afford a home loan?"
-    5. AI simulates outcome with visuals.
+## 📌 **Pending Tasks (High Priority)**
+### **1. Demo Visuals**
+- **Dashboard Screenshot**: Capture `http://localhost:5173` → `demo/screenshots/dashboard.png`.
+- **API Logs Screenshot**: Test `/predict/loan_eligibility` → `demo/screenshots/api_logs.png`.
+- **Pitch Deck GIF**: Convert `slides.pptx` → `demo/pitch_deck.gif`.
+- **Backup Video**: Record 5-minute demo → `demo/video/demo_recording.mp4`.
+
+### **2. Documentation & Submission**
+- **5-Page PDF (`docs/submission.pdf`)**: Compile `SESSION_SUMMARY.md` + screenshots.
+- **Test Deployment**: Follow `DEPLOYMENT.md` (AWS/Azure/GCP).
+- **Final GitHub Push**: Sync all changes before 15 July 2026.
 
 ---
 
@@ -117,7 +117,7 @@ def handle_query(query: str, user_id: str):
 ## 📅 **Timeline (Hackathon Deadline: 15 July 2026)**
 | Task | Deadline | Status |
 |------|----------|--------|
-| Backend + Data Generation | 3 July | ❌ |
-| ML Models + Explainability | 7 July | ❌ |
-| LLM + Scenario Simulation | 10 July | ❌ |
-| Documentation + Pitch Deck | 14 July | ❌ |
+| Demo Visuals (screenshots, GIF, video) | 5 July | ❌ |
+| 5-Page PDF (docs/submission.pdf) | 8 July | ❌ |
+| Test Deployment (cloud server) | 12 July | ❌ |
+| Final GitHub Push | 14 July | ❌ |

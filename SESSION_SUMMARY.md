@@ -76,6 +76,7 @@
 ---
 
 ## 🔄 **Next Steps**
-1. **Backend Setup**: FastAPI + PostgreSQL + Redis.
-2. **Data Generation**: Synthetic transactions + user profiles.
-3. **ML Prototyping**: Train models in Jupyter notebooks (`src/notebooks/`).
+1. **Capture demo visuals** (screenshots, GIF, video).
+2. **Generate 5-page PDF** (`docs/submission.pdf`).
+3. **Test deployment** (cloud server).
+4. **Final GitHub push** before 15 July 2026.
