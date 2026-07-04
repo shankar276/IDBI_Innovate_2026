@@ -13,6 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import redis
 import json
+import numpy as np
+import pandas as pd
 from datetime import datetime
 from typing import Optional, Dict, Any
 
@@ -28,13 +30,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Redis Client
-redis_client = redis.Redis(
-    host="localhost",
-    port=6379,
-    db=0,
-    decode_responses=True
-)
+# Redis Client (skip if not available)
+try:
+    redis_client = redis.Redis(
+        host="localhost",
+        port=6379,
+        db=0,
+        decode_responses=True,
+        socket_timeout=5
+    )
+    redis_client.ping()
+except:
+    redis_client = None
 
 # Mock ML Models (replace with actual models in production)
 def mock_loan_prediction(user_data, transactions):
@@ -108,7 +115,7 @@ def predict_loan_eligibility(request: LoanPredictionRequest):
     """Predict loan approval probability using XGBoost."""
     try:
         cache_key = f"loan_eligibility:{request.user_id}"
-        cached_result = redis_client.get(cache_key)
+        cached_result = redis_client.get(cache_key) if redis_client else None
         
         if cached_result:
             return json.loads(cached_result)
@@ -156,7 +163,8 @@ def predict_loan_eligibility(request: LoanPredictionRequest):
         # Mock prediction
         prediction = mock_loan_prediction(user_data, transactions)
         
-        redis_client.setex(cache_key, 3600, json.dumps(prediction))
+        if redis_client:
+            redis_client.setex(cache_key, 3600, json.dumps(prediction))
         return prediction
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -166,7 +174,7 @@ def predict_fraud_risk(request: FraudPredictionRequest):
     """Assess fraud risk for a transaction using CatBoost."""
     try:
         cache_key = f"fraud_risk:{request.transaction_id}"
-        cached_result = redis_client.get(cache_key)
+        cached_result = redis_client.get(cache_key) if redis_client else None
         
         if cached_result:
             return json.loads(cached_result)
@@ -201,7 +209,9 @@ def predict_fraud_risk(request: FraudPredictionRequest):
         features_df = pd.DataFrame([features])
         
         # Mock prediction
-        prediction = mock_fraud_prediction(transaction)
+        prediction_result = mock_fraud_prediction(transaction)
+        risk = prediction_result["risk"]
+        proba = prediction_result["confidence"]
         
         prediction = {
             "risk": risk,
@@ -213,7 +223,8 @@ def predict_fraud_risk(request: FraudPredictionRequest):
             }
         }
         
-        redis_client.setex(cache_key, 3600, json.dumps(prediction))
+        if redis_client:
+            redis_client.setex(cache_key, 3600, json.dumps(prediction))
         return prediction
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -224,7 +235,7 @@ def simulate_scenario(request: ScenarioRequest):
     try:
         # TODO: Replace with actual scenario simulation logic
         cache_key = f"scenario:{request.user_id}:{request.scenario}"
-        cached_result = redis_client.get(cache_key)
+        cached_result = redis_client.get(cache_key) if redis_client else None
         
         if cached_result:
             return json.loads(cached_result)
@@ -237,7 +248,8 @@ def simulate_scenario(request: ScenarioRequest):
             "retirement_delay": 1
         }
         
-        redis_client.setex(cache_key, 3600, json.dumps(simulation))
+        if redis_client:
+            redis_client.setex(cache_key, 3600, json.dumps(simulation))
         return simulation
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -248,7 +260,7 @@ def handle_query(request: QueryRequest):
     try:
         # TODO: Replace with actual LLM integration (Llama 3/GPT)
         cache_key = f"query:{request.user_id}:{request.query}"
-        cached_result = redis_client.get(cache_key)
+        cached_result = redis_client.get(cache_key) if redis_client else None
         
         if cached_result:
             return json.loads(cached_result)
@@ -262,7 +274,8 @@ def handle_query(request: QueryRequest):
             }
         }
         
-        redis_client.setex(cache_key, 3600, json.dumps(response))
+        if redis_client:
+            redis_client.setex(cache_key, 3600, json.dumps(response))
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
