@@ -66,7 +66,7 @@
 - **Example**:
   ```python
   @app.post("/query")
-def handle_query(query: str, user_id: str):
+  def handle_query(query: str, user_id: str):
       scenario = parse_query(query)  # e.g., "buy a car" → {action: "purchase", item: "car", amount: 1500000}
       impact = simulate_scenario(user_id, scenario)
       return {"response": f"Buying a car will reduce your savings by ₹{impact['savings_impact']} and delay retirement by {impact['retirement_delay']} years."}
@@ -92,32 +92,53 @@ def handle_query(query: str, user_id: str):
 
 ---
 
-## 📌 **Pending Tasks (High Priority)**
-### **1. Demo Visuals**
+## 📌 **Current Status (Jul 08, 2026)**
+
+### **✅ FULLY WORKING - Local Deployment**
+- **Frontend**: http://localhost:5173 — Dashboard + Scenario Simulator **fully functional**
+- **Backend**: http://localhost:8000/docs — All API endpoints return valid JSON
+- **Scenario Simulator**: ✅ Returns cash flow impact, loan eligibility drop, fraud risk increase, retirement delay
+- Docker (PostgreSQL + Redis) running locally
+
+### **⚠️ PARTIAL - AWS EC2 Deployment**
+- **Instance**: t2.micro (12GB EBS) — Ubuntu 22.04
+- **Public IP**: 54.158.246.103
+- **Backend**: http://54.158.246.103:8000/docs — ✅ **Working** (verified via curl)
+- **Frontend**: http://54.158.246.103:5173 — ⚠️ **Loads but Scenario Simulator FAILS** ("Failed to simulate scenario")
+- **Root Cause**: Likely CORS or API URL mismatch in production build (hardcoded localhost vs public IP)
+
+---
+
+## 📌 **Pending Tasks (Critical Priority)**
+### **1. Fix AWS Frontend Scenario Simulator (CRITICAL)**
+- Check browser console (F12) for exact error
+- Verify API URL in production build points to `http://54.158.246.103:8000` (NOT localhost)
+- Verify FastAPI CORS allows `http://54.158.246.103:5173`
+- Rebuild frontend with correct API URL and redeploy
+
+### **2. Demo Visuals (for Submission)**
 - **Dashboard Screenshot**: Capture `http://localhost:5173` → `demo/screenshots/dashboard.png`.
 - **API Logs Screenshot**: Test `/predict/loan_eligibility` → `demo/screenshots/api_logs.png`.
 - **Pitch Deck GIF**: Convert `slides.pptx` → `demo/pitch_deck.gif`.
 - **Backup Video**: Record 5-minute demo → `demo/video/demo_recording.mp4`.
 
-### **2. Documentation & Submission**
+### **3. Documentation & Submission**
 - **5-Page PDF (`docs/submission.pdf`)**: Compile `SESSION_SUMMARY.md` + screenshots.
-- **Test Deployment**: Follow `DEPLOYMENT.md` (AWS/Azure/GCP).
 - **Final GitHub Push**: Sync all changes before 15 July 2026.
 
 ---
 
 ## 🔍 **Blockers & Notes**
-1. **Data Generation**: Need realistic distributions for income, spending, fraud patterns.
-2. **Model Training**: Requires synthetic data first.
-3. **LLM Integration**: May need API keys (Llama 3/GPT).
-4. **Deployment**: FastAPI + React integration (CORS, environment variables).
+1. **AWS Frontend Issue**: Simulator fails — likely CORS or API URL mismatch in production build.
+2. **Deployment**: FastAPI + React integration (CORS, environment variables) needs verification on AWS.
+3. **EBS Volume**: Expanded from 8GB→12GB for ML library installation.
 
 ---
 
 ## 📅 **Timeline (Hackathon Deadline: 15 July 2026)**
 | Task | Deadline | Status |
 |------|----------|--------|
-| Demo Visuals (screenshots, GIF, video) | 5 July | ❌ |
-| 5-Page PDF (docs/submission.pdf) | 8 July | ❌ |
-| Test Deployment (cloud server) | 12 July | ❌ |
-| Final GitHub Push | 14 July | ❌ |
+| **Fix AWS frontend scenario simulator** | **ASAP** | 🔄 **IN PROGRESS** |
+| Demo Visuals (screenshots, GIF, video) | 5 July | ✅ Done (local) |
+| 5-Page PDF (docs/submission.pdf) | 8 July | 🔄 In Progress |
+| Final GitHub Push | 14 July | 🔄 Pending |
